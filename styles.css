@@ -131,10 +131,6 @@ h2 {
   top: 22px;
 }
 
-.preview-panel {
-  max-height: calc(100vh - 56px);
-}
-
 .dropzone {
   display: grid;
   place-items: center;
@@ -456,10 +452,12 @@ video {
 
 .frames-scroll {
   min-height: 270px;
-  max-height: min(54vh, 620px);
-  overflow: auto;
+  height: clamp(320px, calc(100vh - 520px), 620px);
+  overflow-x: hidden;
+  overflow-y: auto;
   overscroll-behavior: contain;
-  padding-right: 4px;
+  padding-right: 6px;
+  padding-bottom: 14px;
   scrollbar-gutter: stable;
 }
 
@@ -532,12 +530,8 @@ video {
     position: static;
   }
 
-  .preview-panel {
-    max-height: none;
-  }
-
   .frames-scroll {
-    max-height: 56vh;
+    height: min(560px, 60vh);
   }
 }
 
