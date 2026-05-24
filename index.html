@@ -1,10 +1,48 @@
 <!doctype html>
-<html lang="id">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Frame Extractor</title>
+    <title>Frame Extractor - Extract Video Frames Online</title>
+    <meta
+      name="description"
+      content="Extract multiple frames from any browser-supported video. Choose a start time, end time, FPS, image format, and download frames individually or as a ZIP."
+    />
+    <meta
+      name="keywords"
+      content="frame extractor, video frame extractor, extract frames from video, video to image, video to JPG, video to PNG, video to WebP"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#0f766e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Frame Extractor - Extract Video Frames Online" />
+    <meta
+      property="og:description"
+      content="Extract video frames locally in your browser. Set the exact time range, FPS, and output format, then download images or a ZIP."
+    />
+    <meta property="og:site_name" content="Frame Extractor" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Frame Extractor - Extract Video Frames Online" />
+    <meta
+      name="twitter:description"
+      content="Extract multiple video frames as JPG, PNG, or WebP directly in your browser."
+    />
     <link rel="stylesheet" href="./styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Frame Extractor",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "description": "Extract multiple frames from a video as JPG, PNG, or WebP images directly in the browser.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
   </head>
   <body>
     <main class="app-shell">
@@ -21,26 +59,26 @@
         </div>
 
         <div class="layout-grid">
-          <section class="panel controls-panel" aria-label="Pengaturan ekstraksi">
+          <section class="panel controls-panel" aria-label="Extraction settings">
             <label class="dropzone" id="dropzone">
               <input id="videoInput" type="file" accept="video/*" />
               <span class="drop-icon" aria-hidden="true">▣</span>
-              <span class="drop-title">Pilih atau drop video</span>
-              <span class="drop-copy">MP4, WebM, MOV, atau format video yang bisa dibaca browser</span>
+              <span class="drop-title">Choose or drop a video</span>
+              <span class="drop-copy">MP4, WebM, MOV, or any video format your browser supports</span>
             </label>
 
             <div class="video-meta" id="videoMeta" hidden>
-              <span id="fileName">Belum ada video</span>
-              <span id="durationText">0 detik</span>
+              <span id="fileName">No video selected</span>
+              <span id="durationText">0s</span>
             </div>
 
             <div class="field-grid">
               <label class="field">
-                <span>Start (detik)</span>
+                <span>Start time (seconds)</span>
                 <input id="startInput" type="number" min="0" step="0.01" value="0" />
               </label>
               <label class="field">
-                <span>End (detik)</span>
+                <span>End time (seconds)</span>
                 <input id="endInput" type="number" min="0" step="0.01" value="10" />
               </label>
               <label class="field">
@@ -48,7 +86,7 @@
                 <input id="fpsInput" type="number" min="0.1" max="60" step="0.1" value="1" />
               </label>
               <label class="field">
-                <span>Nama file</span>
+                <span>Filename prefix</span>
                 <input id="prefixInput" type="text" value="frame" maxlength="48" />
               </label>
             </div>
@@ -75,7 +113,7 @@
                 <span
                   class="tooltip"
                   tabindex="0"
-                  aria-label="Quality mengatur kompresi JPG dan WebP. Nilai tinggi membuat gambar lebih bagus tetapi ukuran file lebih besar."
+                  aria-label="Quality controls JPG and WebP compression. Higher values improve image quality but create larger files."
                 >
                   ?
                 </span>
@@ -84,8 +122,8 @@
             </label>
 
             <div class="summary-strip" aria-live="polite">
-              <span id="estimateText">Estimasi: 10 frame</span>
-              <span id="constraintText">Batas praktis: 1.000 frame</span>
+              <span id="estimateText">Estimate: 10 frames</span>
+              <span id="constraintText">Practical limit: 1,000 frames</span>
             </div>
 
             <div class="actions">
@@ -99,7 +137,7 @@
 
             <div class="progress-wrap" id="progressWrap" hidden>
               <div class="progress-label">
-                <span id="progressText">Menyiapkan...</span>
+                <span id="progressText">Preparing...</span>
                 <span id="progressCount">0%</span>
               </div>
               <progress id="progressBar" value="0" max="100"></progress>
@@ -108,22 +146,22 @@
             <p class="status" id="statusText" role="status"></p>
           </section>
 
-          <section class="panel preview-panel" aria-label="Preview dan hasil">
+          <section class="panel preview-panel" aria-label="Preview and extracted frames">
             <video id="videoPreview" controls muted playsinline></video>
 
             <div class="results-head">
               <div>
-                <p class="eyebrow">Hasil</p>
-                <h2 id="resultCount">Belum ada frame</h2>
+                <p class="eyebrow">Results</p>
+                <h2 id="resultCount">No frames yet</h2>
               </div>
               <button id="clearButton" class="secondary-button compact" type="button" disabled>
                 Clear
               </button>
             </div>
 
-            <div class="frames-scroll" aria-label="Daftar frame hasil ekstraksi">
+            <div class="frames-scroll" aria-label="Extracted frame list">
               <div id="emptyState" class="empty-state">
-                Upload video, pilih rentang waktu, lalu extract. Semua proses berjalan di browser.
+                Upload a video, choose a time range, then extract. Everything runs in your browser.
               </div>
               <div id="framesGrid" class="frames-grid" aria-live="polite"></div>
             </div>

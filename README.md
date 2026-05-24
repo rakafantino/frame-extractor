@@ -1,32 +1,32 @@
 # Frame Extractor
 
-Web app kecil untuk extract banyak frame dari video menjadi gambar. Semua proses berjalan lokal di browser memakai elemen video dan canvas.
+A lightweight web app for extracting multiple frames from a video as images. Everything runs locally in the browser with the video and canvas APIs.
 
-## Menjalankan
+## Run Locally
 
 ```bash
 python3 -m http.server 5173
 ```
 
-Lalu buka:
+Then open:
 
 ```text
 http://127.0.0.1:5173
 ```
 
-## Fitur
+## Features
 
-- Upload atau drag-and-drop video.
-- Set rentang ekstraksi dengan start dan end dalam detik.
-- Set FPS ekstraksi. Contoh: 30 fps selama 10 detik menghasilkan 300 frame.
-- Output JPG, PNG, atau WebP.
-- Quality slider untuk JPG dan WebP.
-- Download per frame atau semua frame sebagai ZIP.
-- Nama file berurutan, misalnya `frame_001.jpg`, `frame_002.jpg`.
-- Estimasi jumlah frame sebelum proses dimulai.
+- Upload or drag and drop a video.
+- Choose an exact extraction range with start and end times in seconds.
+- Set the extraction FPS. Example: 30 fps over 10 seconds creates 300 frames.
+- Export frames as JPG, PNG, or WebP.
+- Adjust quality for JPG and WebP.
+- Download individual frames or all frames as a ZIP file.
+- Generate ordered filenames such as `frame_001.jpg` and `frame_002.jpg`.
+- Preview the estimated frame count before extraction starts.
 
-## Constraint
+## Constraints
 
-- Maksimal 1.000 frame per ekstraksi agar browser tidak kehabisan memori.
-- Akurasi seek mengikuti kemampuan browser dan codec video. Untuk kebanyakan MP4/WebM hasilnya cukup baik, tetapi codec tertentu bisa seek ke frame terdekat.
-- Video tidak di-upload ke server.
+- Each extraction is limited to 1,000 frames to avoid exhausting browser memory.
+- Seek accuracy depends on the browser and video codec. Most MP4 and WebM files work well, but some codecs may seek to the closest available frame.
+- Videos are never uploaded to a server.

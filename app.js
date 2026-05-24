@@ -60,7 +60,7 @@ function safePrefix(value) {
 }
 
 function formatDuration(seconds) {
-  if (!Number.isFinite(seconds)) return "0 detik";
+  if (!Number.isFinite(seconds)) return "0s";
   const mins = Math.floor(seconds / 60);
   const secs = (seconds % 60).toFixed(2).replace(/\.00$/, "");
   return mins ? `${mins}m ${secs}s` : `${secs}s`;
@@ -88,24 +88,24 @@ function updateEstimate() {
   const format = selectedFormat();
 
   els.qualityField.hidden = format === "image/png";
-  els.estimateText.textContent = `Estimasi: ${count.toLocaleString("id-ID")} frame`;
-  els.constraintText.textContent = `Batas praktis: ${MAX_FRAMES.toLocaleString("id-ID")} frame`;
+  els.estimateText.textContent = `Estimate: ${count.toLocaleString("en-US")} frames`;
+  els.constraintText.textContent = `Practical limit: ${MAX_FRAMES.toLocaleString("en-US")} frames`;
 
   const invalidRange = !hasVideo || end <= start || count < 1;
   const tooMany = count > MAX_FRAMES;
   els.extractButton.disabled = invalidRange || tooMany || isExtracting;
 
   if (!hasVideo) {
-    setStatus("Pilih video untuk mulai.");
+    setStatus("Choose a video to begin.");
   } else if (end <= start) {
-    setStatus("End harus lebih besar dari start.", true);
+    setStatus("End time must be greater than start time.", true);
   } else if (count < 1) {
-    setStatus("Naikkan FPS atau perpanjang rentang waktu.", true);
+    setStatus("Increase FPS or choose a longer time range.", true);
   } else if (tooMany) {
-    setStatus(`Terlalu banyak frame. Turunkan FPS atau pendekkan rentang waktu.`, true);
+    setStatus(`Too many frames. Lower the FPS or choose a shorter time range.`, true);
   } else {
     setStatus(
-      `Siap extract ${count.toLocaleString("id-ID")} frame dari ${formatDuration(start)} sampai ${formatDuration(end)} pada ${fps} fps.`,
+      `Ready to extract ${count.toLocaleString("en-US")} frames from ${formatDuration(start)} to ${formatDuration(end)} at ${fps} fps.`,
     );
   }
 }
@@ -115,7 +115,7 @@ function clearFrames() {
   frames = [];
   els.framesGrid.replaceChildren();
   els.emptyState.hidden = false;
-  els.resultCount.textContent = "Belum ada frame";
+  els.resultCount.textContent = "No frames yet";
   els.zipButton.disabled = true;
   els.clearButton.disabled = true;
 }
@@ -129,8 +129,8 @@ function resetApp() {
   els.videoPreview.removeAttribute("src");
   els.videoPreview.load();
   els.videoMeta.hidden = true;
-  els.fileName.textContent = "Belum ada video";
-  els.durationText.textContent = "0 detik";
+  els.fileName.textContent = "No video selected";
+  els.durationText.textContent = "0s";
   els.startInput.value = "0";
   els.endInput.value = "10";
   els.fpsInput.value = "1";
@@ -149,7 +149,7 @@ function setProgress(done, total, label) {
 
 function loadFile(file) {
   if (!file || !file.type.startsWith("video/")) {
-    setStatus("File harus berupa video.", true);
+    setStatus("Please choose a video file.", true);
     return;
   }
 
@@ -160,15 +160,15 @@ function loadFile(file) {
   els.videoPreview.src = videoUrl;
   els.videoMeta.hidden = false;
   els.fileName.textContent = file.name;
-  els.durationText.textContent = "Membaca durasi...";
-  setStatus("Memuat metadata video...");
+  els.durationText.textContent = "Reading duration...";
+  setStatus("Loading video metadata...");
 }
 
 function waitForEvent(target, eventName, timeoutMs = SEEK_TIMEOUT_MS) {
   return new Promise((resolve, reject) => {
     const timeout = window.setTimeout(() => {
       cleanup();
-      reject(new Error(`Timeout saat menunggu ${eventName}.`));
+      reject(new Error(`Timed out while waiting for ${eventName}.`));
     }, timeoutMs);
 
     const cleanup = () => {
@@ -184,7 +184,7 @@ function waitForEvent(target, eventName, timeoutMs = SEEK_TIMEOUT_MS) {
 
     const onError = () => {
       cleanup();
-      reject(new Error("Browser gagal membaca video ini."));
+      reject(new Error("The browser could not read this video."));
     };
 
     target.addEventListener(eventName, onEvent, { once: true });
@@ -203,7 +203,7 @@ async function seekTo(video, time) {
 function canvasToBlob(canvas, format, quality) {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Gagal membuat gambar dari frame."))),
+      (blob) => (blob ? resolve(blob) : reject(new Error("Could not create an image from this frame."))),
       format,
       quality,
     );
@@ -216,7 +216,7 @@ function renderFrameCard(frame) {
 
   const image = document.createElement("img");
   image.src = frame.url;
-  image.alt = `${frame.name} pada ${formatDuration(frame.time)}`;
+  image.alt = `${frame.name} at ${formatDuration(frame.time)}`;
   image.loading = "lazy";
 
   const footer = document.createElement("footer");
@@ -267,12 +267,12 @@ async function extractFrames() {
     canvas.height = video.videoHeight;
 
     if (!canvas.width || !canvas.height) {
-      throw new Error("Resolusi video belum terbaca.");
+      throw new Error("Video resolution is not available yet.");
     }
 
     for (let index = 0; index < count; index += 1) {
       const time = start + index / fps;
-      setProgress(index, count, `Extract frame ${index + 1} dari ${count}`);
+      setProgress(index, count, `Extracting frame ${index + 1} of ${count}`);
       await seekTo(video, time);
 
       if (format === "image/jpeg") {
@@ -297,12 +297,12 @@ async function extractFrames() {
       if (index % 8 === 0) await sleep(0);
     }
 
-    setProgress(count, count, "Selesai");
+    setProgress(count, count, "Done");
     els.emptyState.hidden = true;
-    els.resultCount.textContent = `${frames.length.toLocaleString("id-ID")} frame siap`;
+    els.resultCount.textContent = `${frames.length.toLocaleString("en-US")} frames ready`;
     els.zipButton.disabled = frames.length === 0;
     els.clearButton.disabled = frames.length === 0;
-    setStatus("Frame berhasil diekstrak. Kamu bisa download per frame atau ZIP.");
+    setStatus("Frames extracted. Download individual frames or the ZIP file.");
   } catch (error) {
     setStatus(error.message, true);
   } finally {
@@ -424,7 +424,7 @@ async function createZip(files) {
 async function downloadZip() {
   if (!frames.length) return;
   els.zipButton.disabled = true;
-  setStatus("Membuat ZIP...");
+  setStatus("Creating ZIP...");
 
   try {
     const blob = await createZip(frames);
@@ -436,7 +436,7 @@ async function downloadZip() {
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    setStatus("ZIP siap di-download.");
+    setStatus("ZIP is ready to download.");
   } catch (error) {
     setStatus(error.message, true);
   } finally {
@@ -489,7 +489,7 @@ els.zipButton.addEventListener("click", downloadZip);
 els.resetButton.addEventListener("click", resetApp);
 els.clearButton.addEventListener("click", () => {
   clearFrames();
-  setStatus("Hasil dibersihkan.");
+  setStatus("Results cleared.");
 });
 
 updateEstimate();
