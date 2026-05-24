@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frame Extractor</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <div class="topbar">
+          <div>
+            <p class="eyebrow">Local video tool</p>
+            <h1 id="app-title">Frame Extractor</h1>
+          </div>
+          <button id="resetButton" class="icon-button" type="button" title="Reset">
+            <span aria-hidden="true">↺</span>
+            <span class="sr-only">Reset</span>
+          </button>
+        </div>
+
+        <div class="layout-grid">
+          <section class="panel controls-panel" aria-label="Pengaturan ekstraksi">
+            <label class="dropzone" id="dropzone">
+              <input id="videoInput" type="file" accept="video/*" />
+              <span class="drop-icon" aria-hidden="true">▣</span>
+              <span class="drop-title">Pilih atau drop video</span>
+              <span class="drop-copy">MP4, WebM, MOV, atau format video yang bisa dibaca browser</span>
+            </label>
+
+            <div class="video-meta" id="videoMeta" hidden>
+              <span id="fileName">Belum ada video</span>
+              <span id="durationText">0 detik</span>
+            </div>
+
+            <div class="field-grid">
+              <label class="field">
+                <span>Start (detik)</span>
+                <input id="startInput" type="number" min="0" step="0.01" value="0" />
+              </label>
+              <label class="field">
+                <span>End (detik)</span>
+                <input id="endInput" type="number" min="0" step="0.01" value="10" />
+              </label>
+              <label class="field">
+                <span>Frames per second</span>
+                <input id="fpsInput" type="number" min="0.1" max="60" step="0.1" value="1" />
+              </label>
+              <label class="field">
+                <span>Nama file</span>
+                <input id="prefixInput" type="text" value="frame" maxlength="48" />
+              </label>
+            </div>
+
+            <fieldset class="format-group">
+              <legend>Output</legend>
+              <label>
+                <input type="radio" name="format" value="image/jpeg" checked />
+                JPG
+              </label>
+              <label>
+                <input type="radio" name="format" value="image/png" />
+                PNG
+              </label>
+              <label>
+                <input type="radio" name="format" value="image/webp" />
+                WebP
+              </label>
+            </fieldset>
+
+            <label class="field quality-field" id="qualityField">
+              <span class="label-row">
+                Quality <strong id="qualityValue">0.92</strong>
+                <span
+                  class="tooltip"
+                  tabindex="0"
+                  aria-label="Quality mengatur kompresi JPG dan WebP. Nilai tinggi membuat gambar lebih bagus tetapi ukuran file lebih besar."
+                >
+                  ?
+                </span>
+              </span>
+              <input id="qualityInput" type="range" min="0.1" max="1" step="0.01" value="0.92" />
+            </label>
+
+            <div class="summary-strip" aria-live="polite">
+              <span id="estimateText">Estimasi: 10 frame</span>
+              <span id="constraintText">Batas praktis: 1.000 frame</span>
+            </div>
+
+            <div class="actions">
+              <button id="extractButton" class="primary-button" type="button" disabled>
+                Extract frames
+              </button>
+              <button id="zipButton" class="secondary-button" type="button" disabled>
+                Download ZIP
+              </button>
+            </div>
+
+            <div class="progress-wrap" id="progressWrap" hidden>
+              <div class="progress-label">
+                <span id="progressText">Menyiapkan...</span>
+                <span id="progressCount">0%</span>
+              </div>
+              <progress id="progressBar" value="0" max="100"></progress>
+            </div>
+
+            <p class="status" id="statusText" role="status"></p>
+          </section>
+
+          <section class="panel preview-panel" aria-label="Preview dan hasil">
+            <video id="videoPreview" controls muted playsinline></video>
+
+            <div class="results-head">
+              <div>
+                <p class="eyebrow">Hasil</p>
+                <h2 id="resultCount">Belum ada frame</h2>
+              </div>
+              <button id="clearButton" class="secondary-button compact" type="button" disabled>
+                Clear
+              </button>
+            </div>
+
+            <div class="frames-scroll" aria-label="Daftar frame hasil ekstraksi">
+              <div id="emptyState" class="empty-state">
+                Upload video, pilih rentang waktu, lalu extract. Semua proses berjalan di browser.
+              </div>
+              <div id="framesGrid" class="frames-grid" aria-live="polite"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
